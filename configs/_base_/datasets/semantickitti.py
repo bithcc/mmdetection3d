@@ -49,7 +49,7 @@ labels_map = {
 metainfo = dict(
     classes=class_names, seg_label_mapping=labels_map, max_label=259)
 
-input_modality = dict(use_lidar=True, use_camera=False)
+input_modality = dict(use_lidar=True, use_camera=False)#这里是不是之后可以修改一下，改成两种模态的输入？@@@@
 
 # Example to use different file client
 # Method 1: simply set the data root and let the file I/O module
@@ -68,17 +68,17 @@ backend_args = None
 
 train_pipeline = [
     dict(
-        type='LoadPointsFromFile',
+        type='LoadPointsFromFile', #从点云文件中加载点云，使用xyz坐标，剩下的一个是强度？
         coord_type='LIDAR',
         load_dim=4,
         use_dim=4,
         backend_args=backend_args),
     dict(
-        type='LoadAnnotations3D',
-        with_bbox_3d=False,
-        with_label_3d=False,
-        with_seg_3d=True,
-        seg_3d_dtype='np.int32',
+        type='LoadAnnotations3D', #加载标注文件，我其实挺好奇点云的标注是怎么标注的？是和图片的mask差不多吗？
+        with_bbox_3d=False, #加载3d bbox
+        with_label_3d=False, #加载3d box标签
+        with_seg_3d=True, #加载点云3d语义掩码
+        seg_3d_dtype='np.int32', #点云3d语义掩码类型
         seg_offset=2**16,
         dataset_type='semantickitti',
         backend_args=backend_args),

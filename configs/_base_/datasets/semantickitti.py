@@ -85,7 +85,7 @@ train_pipeline = [
     dict(type='PointSegClassMapping'),
     dict(
         type='RandomFlip3D',
-        sync_2d=False,
+        sync_2d=False, #这里应该是是否和2d同步，如果要加载2d图片是不是要改一下
         flip_ratio_bev_horizontal=0.5,
         flip_ratio_bev_vertical=0.5),
     dict(
@@ -94,9 +94,9 @@ train_pipeline = [
         scale_ratio_range=[0.95, 1.05],
         translation_std=[0.1, 0.1, 0.1],
     ),
-    dict(type='Pack3DDetInputs', keys=['points', 'pts_semantic_mask'])
+    dict(type='Pack3DDetInputs', keys=['points', 'pts_semantic_mask'])#把点云和点云的3d掩码打包
 ]
-test_pipeline = [
+test_pipeline = [ #可以看到，在测试的时候没有使用数据增强
     dict(
         type='LoadPointsFromFile',
         coord_type='LIDAR',
@@ -181,8 +181,8 @@ tta_pipeline = [
 ]
 
 train_dataloader = dict(
-    batch_size=2,
-    num_workers=4,
+    batch_size=2, #batch_size &&&&
+    num_workers=4,#num_workers &&&&
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
@@ -217,8 +217,11 @@ val_dataloader = test_dataloader
 val_evaluator = dict(type='SegMetric')
 test_evaluator = val_evaluator
 
-vis_backends = [dict(type='LocalVisBackend')]
+vis_backends = [dict(type='LocalVisBackend'),
+                dict(type='TensorboardVisBackend')#添加了可视化后端&&&&
+                # ,dict(type='WandbVisBackend') #添加了可视化后端，这里需要安装wandb&&&&
+                ]
 visualizer = dict(
-    type='Det3DLocalVisualizer', vis_backends=vis_backends, name='visualizer')
+    type='Det3DLocalVisualizer', vis_backends=vis_backends, name='visualizer')#@@@@ 这里说是Det3DLocalVisualizer可以支持不同的后端，后面可以试一试
 
-tta_model = dict(type='Seg3DTTAModel')
+tta_model = dict(type='Seg3DTTAModel')#@@@@这个是什么？

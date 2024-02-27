@@ -1,7 +1,7 @@
-grid_shape = [480, 360, 32]
+grid_shape = [480, 360, 32]#&&&&原始点云的分割尺寸，维度上分别是radius（半径）、angle（角度）、height（高度）
 model = dict(
-    type='Cylinder3D',
-    data_preprocessor=dict(
+    type='Cylinder3D', #检测器的名字
+    data_preprocessor=dict(#@@@@这里就是对点云进行柱状体素化的模块
         type='Det3DDataPreprocessor',
         voxel=True,
         voxel_type='cylindrical',
@@ -12,20 +12,20 @@ model = dict(
             max_voxels=-1,
         ),
     ),
-    voxel_encoder=dict(
+    voxel_encoder=dict(#@@@@编码器模块，也是之后要修改的地方
         type='SegVFE',
         feat_channels=[64, 128, 256, 256],
         in_channels=6,
         with_voxel_center=True,
         feat_compression=16,
         return_point_feats=False),
-    backbone=dict(
+    backbone=dict(#@@@@特征提取器模块，也是之后要修改的地方
         type='Asymm3DSpconv',
         grid_size=grid_shape,
         input_channels=16,
         base_channels=32,
         norm_cfg=dict(type='BN1d', eps=1e-5, momentum=0.1)),
-    decode_head=dict(
+    decode_head=dict(#@@@@解码器模块，也是之后要修改的地方
         type='Cylinder3DHead',
         channels=128,
         num_classes=20,

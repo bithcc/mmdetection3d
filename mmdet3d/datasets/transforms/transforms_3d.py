@@ -669,7 +669,7 @@ class GlobalRotScaleTrans(BaseTransform):
                  translation_std: List[int] = [0, 0, 0],
                  shift_height: bool = False) -> None:
         seq_types = (list, tuple, np.ndarray)
-        if not isinstance(rot_range, seq_types):
+        if not isinstance(rot_range, seq_types):#对点云的随机旋转
             assert isinstance(rot_range, (int, float)), \
                 f'unsupported rot_range type {type(rot_range)}'
             rot_range = [-rot_range, rot_range]

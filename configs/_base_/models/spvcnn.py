@@ -1,7 +1,7 @@
 model = dict(
     type='MinkUNet',
     data_preprocessor=dict(
-        type='Det3DDataPreprocessor',
+        type='Det3DDataPreprocessor',#@@@@这里是之后要参考修改的地方
         voxel=True,
         voxel_type='minkunet',
         batch_first=False,

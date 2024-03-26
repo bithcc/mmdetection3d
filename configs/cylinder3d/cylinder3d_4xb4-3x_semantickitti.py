@@ -15,7 +15,7 @@ test_cfg = dict(type='TestLoop')
 
 # learning rate
 param_scheduler = [
-    dict(
+    dict(#&&&&为什么要用这个learning rate？
         type='LinearLR', start_factor=0.001, by_epoch=False, begin=0,
         end=1000),
     dict(

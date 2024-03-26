@@ -489,7 +489,7 @@ class HardVFE(nn.Module):
 
 
 @MODELS.register_module()
-class SegVFE(nn.Module):
+class SegVFE(nn.Module):#@@@@SegVFE 关注重点
     """Voxel feature encoder used in segmentation task.
 
     It encodes features of voxels and their points. It could also fuse
@@ -534,13 +534,13 @@ class SegVFE(nn.Module):
                  feat_compression: Optional[int] = None,
                  return_point_feats: bool = False) -> None:
         super(SegVFE, self).__init__()
-        assert mode in ['avg', 'max']
-        assert len(feat_channels) > 0
+        assert mode in ['avg', 'max']#mode=max #关注重点
+        assert len(feat_channels) > 0 #feat_channels=4
         assert not (voxel_size and grid_shape), \
             'voxel_size and grid_shape cannot be setting at the same time'
         if with_voxel_center:
             in_channels += 3
-        self.in_channels = in_channels
+        self.in_channels = in_channels#从6变成9
         self._with_voxel_center = with_voxel_center
         self.return_point_feats = return_point_feats
 
@@ -567,7 +567,7 @@ class SegVFE(nn.Module):
         self.vx = self.voxel_size[0]
         self.vy = self.voxel_size[1]
         self.vz = self.voxel_size[2]
-        self.x_offset = self.vx / 2 + point_cloud_range[0]
+        self.x_offset = self.vx / 2 + point_cloud_range[0]#offset是什么？
         self.y_offset = self.vy / 2 + point_cloud_range[1]
         self.z_offset = self.vz / 2 + point_cloud_range[2]
 
@@ -587,7 +587,7 @@ class SegVFE(nn.Module):
                         nn.Linear(in_filters, out_filters), norm_layer,
                         nn.ReLU(inplace=True)))
         self.vfe_layers = nn.ModuleList(vfe_layers)
-        self.vfe_scatter = DynamicScatter(self.voxel_size,
+        self.vfe_scatter = DynamicScatter(self.voxel_size,#关注重点
                                           self.point_cloud_range,
                                           (mode != 'max'))
         self.compression_layers = None
@@ -600,7 +600,7 @@ class SegVFE(nn.Module):
         """Forward functions.
 
         Args:
-            features (Tensor): Features of voxels, shape is NxC.
+            features (Tensor): Features of voxels, shape is NxC.#这个地方难道不是点云特征？
             coors (Tensor): Coordinates of voxels, shape is  Nx(1+NDim).
 
         Returns:

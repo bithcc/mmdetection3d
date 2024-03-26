@@ -10,7 +10,7 @@ from .encoder_decoder import EncoderDecoder3D
 
 
 @MODELS.register_module()
-class Cylinder3D(EncoderDecoder3D):
+class Cylinder3D(EncoderDecoder3D):#@@@@Cylinder3d的分割算法网络
     """`Cylindrical and Asymmetrical 3D Convolution Networks for LiDAR
     Segmentation.
 

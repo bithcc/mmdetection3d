@@ -113,7 +113,7 @@ def point_sample(img_meta: dict,
 
 
 @MODELS.register_module()
-class PointFusion(BaseModule):
+class PointFusion(BaseModule):#@@@@是在这里进行融合吗？
     """Fuse image features from multi-scale features.
 
     Args:

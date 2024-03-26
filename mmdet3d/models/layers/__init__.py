@@ -1,4 +1,4 @@
-# Copyright (c) OpenMMLab. All rights reserved.
+# Copyright (c) OpenMMLab. All rights reserved.#@@@@所有能够使用的block都在这里了
 from .box3d_nms import (aligned_3d_nms, box3d_multiclass_nms, circle_nms,
                         nms_bev, nms_normal_bev)
 from .dgcnn_modules import DGCNNFAModule, DGCNNFPModule, DGCNNGFModule

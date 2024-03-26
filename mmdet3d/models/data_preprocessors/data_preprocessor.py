@@ -123,7 +123,7 @@ class Det3DDataPreprocessor(DetDataPreprocessor):
         if voxel:
             self.voxel_layer = VoxelizationByGridShape(**voxel_layer)
 
-    def forward(self,
+    def forward(self,#@@@@前向传播
                 data: Union[dict, List[dict]],
                 training: bool = False) -> Union[dict, List[dict]]:
         """Perform normalization, padding and bgr2rgb conversion based on
@@ -391,16 +391,16 @@ class Det3DDataPreprocessor(DetDataPreprocessor):
                 coors.append(res_coors)
             voxels = torch.cat(points, dim=0)
             coors = torch.cat(coors, dim=0)
-        elif self.voxel_type == 'cylindrical':
+        elif self.voxel_type == 'cylindrical':#柱面体素化
             voxels, coors = [], []
             for i, (res, data_sample) in enumerate(zip(points, data_samples)):
-                rho = torch.sqrt(res[:, 0]**2 + res[:, 1]**2)
-                phi = torch.atan2(res[:, 1], res[:, 0])
-                polar_res = torch.stack((rho, phi, res[:, 2]), dim=-1)
+                rho = torch.sqrt(res[:, 0]**2 + res[:, 1]**2)#距离   每一组数据的坐标转换
+                phi = torch.atan2(res[:, 1], res[:, 0])#角度
+                polar_res = torch.stack((rho, phi, res[:, 2]), dim=-1)#转换后的坐标
                 min_bound = polar_res.new_tensor(
                     self.voxel_layer.point_cloud_range[:3])
                 max_bound = polar_res.new_tensor(
-                    self.voxel_layer.point_cloud_range[3:])
+                    self.voxel_layer.point_cloud_range[3:])#point_cloud_range=[0, -3.14159265359, -4, 50, 3.14159265359, 2],#x方向为0到50，向前为正，y方向为-pai到pai，z方向为-4到2，向上为正，需要根据数据集调整
                 try:  # only support PyTorch >= 1.9.0
                     polar_res_clamp = torch.clamp(polar_res, min_bound,
                                                   max_bound)
@@ -482,6 +482,9 @@ class Det3DDataPreprocessor(DetDataPreprocessor):
             voxel_semantic_mask, _, point2voxel_map = dynamic_scatter_3d(
                 F.one_hot(pts_semantic_mask.long()).float(), res_coors, 'mean',
                 True)
+            # voxel_semantic_mask, _, point2voxel_map = dynamic_scatter_3d(
+            #     F.one_hot(pts_semantic_mask.long()).float(), res_coors, 'max',
+            #     True)#@@@@bithcc修改了体素特征计算方式
             voxel_semantic_mask = torch.argmax(voxel_semantic_mask, dim=-1)
             data_sample.gt_pts_seg.voxel_semantic_mask = voxel_semantic_mask
             data_sample.point2voxel_map = point2voxel_map

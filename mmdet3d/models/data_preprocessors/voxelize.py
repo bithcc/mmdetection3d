@@ -156,7 +156,7 @@ class VoxelizationByGridShape(nn.Module):
             grid_shape = torch.tensor(grid_shape, dtype=torch.float32)
             voxel_size = (point_cloud_range[3:] - point_cloud_range[:3]) / (
                 grid_shape - 1)
-            voxel_size = voxel_size.tolist()
+            voxel_size = voxel_size.tolist()#体素大小
             self.voxel_size = voxel_size
         else:
             raise ValueError('must assign a value to voxel_size or grid_shape')
@@ -214,6 +214,44 @@ class _DynamicScatter(Function):
             feats, coors, reduce_type)
         (voxel_feats, voxel_coors, point2voxel_map,
          voxel_points_count) = results
+         #对柱状体素沿着角度维度进行排序，按正方向和逆方向结果进行相应特征相加，并返回原来的特征中
+         #2024年3月26日修改@@@@bithcc
+         #下面这段代码的作用是进行全局的phimix，可以调整概率
+        # import random
+        # if random.random() < 1.0:
+        #     _,indices_pos = torch.sort(voxel_coors[:,1],descending=False)
+        #     temp_coors_pos = voxel_coors[indices_pos]
+        #     temp_feats_pos = voxel_feats[indices_pos]
+
+        #     _,indices_neg = torch.sort(voxel_coors[:,1],descending=True)
+        #     temp_coors_neg = voxel_coors[indices_neg]
+        #     temp_feats_neg = voxel_feats[indices_neg]
+
+        #     sum_temp_feats = temp_feats_pos + temp_feats_neg
+
+
+        #     _,indices_to_original = torch.sort(indices_pos)
+
+        #     voxel_feats = sum_temp_feats[indices_to_original]
+        import random
+        if random.random() < 0.5:
+            _,indices_pos = torch.sort(voxel_coors[:,1],descending=False) #按phi正排序
+            temp_coors_pos = voxel_coors[indices_pos]
+            temp_feats_pos = voxel_feats[indices_pos]
+
+            _,indices_neg = torch.sort(voxel_coors[:,1],descending=True)  #按phi逆排序
+            temp_coors_neg = voxel_coors[indices_neg]
+            temp_feats_neg = voxel_feats[indices_neg]
+
+            sum_temp_feats = temp_feats_pos + temp_feats_neg
+            num_rows_to_replace=sum_temp_feats.shape[0]//6  #以0degree为界，取60degree的范围进行mix
+            indices_to_replace = indices_pos[:num_rows_to_replace]
+            
+            voxel_feats[indices_to_replace] = sum_temp_feats[:num_rows_to_replace]
+            
+
+            
+
         ctx.reduce_type = reduce_type
         ctx.save_for_backward(feats, voxel_feats, point2voxel_map,
                               voxel_points_count)

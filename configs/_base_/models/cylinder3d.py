@@ -1,5 +1,5 @@
 grid_shape = [480, 360, 32]#&&&&原始点云的分割尺寸，维度上分别是radius（半径）、angle（角度）、height（高度）
-model = dict(
+model = dict(       #关注重点，这里是传入的模型的block的组成
     type='Cylinder3D', #检测器的名字
     data_preprocessor=dict(#@@@@这里就是对点云进行柱状体素化的模块
         type='Det3DDataPreprocessor',
@@ -7,7 +7,7 @@ model = dict(
         voxel_type='cylindrical',
         voxel_layer=dict(
             grid_shape=grid_shape,
-            point_cloud_range=[0, -3.14159265359, -4, 50, 3.14159265359, 2],
+            point_cloud_range=[0, -3.14159265359, -4, 50, 3.14159265359, 2],#x方向为0到50，向前为正，y方向为-pai到pai，z方向为-4到2，向上为正，需要根据数据集调整
             max_num_points=-1,
             max_voxels=-1,
         ),

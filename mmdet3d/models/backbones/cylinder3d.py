@@ -4,7 +4,7 @@ r"""Modified from Cylinder3D.
 Please refer to `Cylinder3D github page
 <https://github.com/xinge008/Cylinder3D>`_ for details
 """
-
+#@@@@cylinder3d的backbone，即非对称卷积
 from typing import List, Optional
 
 import numpy as np
@@ -41,8 +41,8 @@ class AsymmResBlock(BaseModule):
         super().__init__()
 
         self.conv0_0 = SubMConv3d(
-            in_channels,
-            out_channels,
+            in_channels,#16
+            out_channels,#32
             kernel_size=(1, 3, 3),
             padding=1,
             bias=False,
@@ -219,7 +219,7 @@ class AsymmeDownBlock(BaseModule):
             return res
 
 
-class AsymmeUpBlock(BaseModule):
+class AsymmeUpBlock(BaseModule):#关注重点
     """Asymmetrical UpSample Block.
 
     Args:
@@ -408,7 +408,7 @@ class Asymm3DSpconv(BaseModule):
             Defaults to None.
     """
 
-    def __init__(self,
+    def __init__(self,#关注重点
                  grid_size: int,
                  input_channels: int,
                  base_channels: int = 16,
@@ -421,7 +421,7 @@ class Asymm3DSpconv(BaseModule):
 
         self.grid_size = grid_size
         self.backbone_depth = backbone_depth
-        self.down_context = AsymmResBlock(
+        self.down_context = AsymmResBlock(#关注重点
             input_channels, base_channels, indice_key='pre', norm_cfg=norm_cfg)
 
         self.down_block_list = torch.nn.ModuleList()

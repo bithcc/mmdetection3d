@@ -19,7 +19,7 @@ from .transforms_3d import (AffineResize, BackgroundPointsFilter,
                             RandomFlip3D, RandomJitterPoints, RandomResize3D,
                             RandomShiftScale, Resize3D, VoxelBasedPointSampler)
 
-__all__ = [
+__all__ = [#@@@@对lidar进行数据增强的方法
     'ObjectSample', 'RandomFlip3D', 'ObjectNoise', 'GlobalRotScaleTrans',
     'PointShuffle', 'ObjectRangeFilter', 'PointsRangeFilter',
     'Pack3DDetInputs', 'LoadMultiViewImageFromFiles', 'LoadPointsFromFile',

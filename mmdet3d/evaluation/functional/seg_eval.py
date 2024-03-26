@@ -4,7 +4,7 @@ from mmengine.logging import print_log
 from terminaltables import AsciiTable
 
 
-def fast_hist(preds, labels, num_classes):
+def fast_hist(preds, labels, num_classes):#3月25号看到了这里
     """Compute the confusion matrix for every batch.
 
     Args:
@@ -20,7 +20,7 @@ def fast_hist(preds, labels, num_classes):
 
     k = (labels >= 0) & (labels < num_classes)
     bin_count = np.bincount(
-        num_classes * labels[k].astype(int) + preds[k],
+        num_classes * labels[k].astype(int) + preds[k],#这里对于数据的格式还是不太明白
         minlength=num_classes**2)
     return bin_count[:num_classes**2].reshape(num_classes, num_classes)
 
@@ -36,7 +36,7 @@ def per_class_iou(hist):
         np.ndarray: Calculated per class iou
     """
 
-    return np.diag(hist) / (hist.sum(1) + hist.sum(0) - np.diag(hist))
+    return np.diag(hist) / (hist.sum(1) + hist.sum(0) - np.diag(hist))#直方图对对角线相加，
 
 
 def get_acc(hist):

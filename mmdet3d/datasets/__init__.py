@@ -25,7 +25,7 @@ from .transforms import (AffineResize, BackgroundPointsFilter, GlobalAlignment,
 from .utils import get_loading_pipeline
 from .waymo_dataset import WaymoDataset
 
-__all__ = [
+__all__ = [#@@@@从这里调试要较长时间
     'KittiDataset', 'CBGSDataset', 'NuScenesDataset', 'LyftDataset',
     'ObjectSample', 'RandomFlip3D', 'ObjectNoise', 'GlobalRotScaleTrans',
     'PointShuffle', 'ObjectRangeFilter', 'PointsRangeFilter',

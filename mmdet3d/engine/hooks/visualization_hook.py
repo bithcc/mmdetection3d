@@ -67,7 +67,7 @@ class Det3DVisualizationHook(Hook):
                  backend_args: Optional[dict] = None):
         self._visualizer: Visualizer = Visualizer.get_current_instance()
         self.interval = interval
-        self.score_thr = score_thr
+        self.score_thr = score_thr#2024年3月22日看到了这里，可视化相关操作
         self.show = show
         if self.show:
             # No need to think about vis backends.

@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from mmdet3d.models import Cylinder3D
+from mmdet3d.models import Cylinder3D#关注重点
 from mmdet3d.models.backbones import Asymm3DSpconv
 from mmdet3d.models.data_preprocessors import Det3DDataPreprocessor
 from mmdet3d.models.decode_heads.cylinder3d_head import Cylinder3DHead

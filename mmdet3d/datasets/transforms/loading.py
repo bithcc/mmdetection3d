@@ -313,7 +313,7 @@ class LoadImageFromNDArray(LoadImageFromFile):
 
 
 @TRANSFORMS.register_module()
-class LoadPointsFromMultiSweeps(BaseTransform):
+class LoadPointsFromMultiSweeps(BaseTransform):#&&&&叠帧
     """Load points from multiple sweeps.
 
     This is usually used for nuScenes dataset to utilize previous sweeps.
@@ -851,14 +851,14 @@ class LoadAnnotations3D(LoadAnnotations):
             with_label=with_label,
             with_mask=with_mask,
             with_seg=with_seg,
-            poly2mask=poly2mask,
+            poly2mask=poly2mask,#true
             backend_args=backend_args)
         self.with_bbox_3d = with_bbox_3d
         self.with_bbox_depth = with_bbox_depth
         self.with_label_3d = with_label_3d
         self.with_attr_label = with_attr_label
         self.with_mask_3d = with_mask_3d
-        self.with_seg_3d = with_seg_3d
+        self.with_seg_3d = with_seg_3d #true
         self.with_panoptic_3d = with_panoptic_3d
         self.seg_3d_dtype = eval(seg_3d_dtype)
         self.seg_offset = seg_offset

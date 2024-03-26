@@ -22,7 +22,7 @@ class Seg3DTTAModel(BaseTTAModel):
             List[:obj:`Det3DDataSample`]: Merged prediction.
         """
         predictions = []
-        for data_samples in data_samples_list:
+        for data_samples in data_samples_list:#tta
             seg_logits = data_samples[0].pts_seg_logits.pts_seg_logits
             logits = torch.zeros(seg_logits.shape).to(seg_logits)
             for data_sample in data_samples:

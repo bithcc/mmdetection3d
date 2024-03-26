@@ -143,5 +143,5 @@ def main():
     runner.train()
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':#检测直接运行该py文件，主函数调用
     main()

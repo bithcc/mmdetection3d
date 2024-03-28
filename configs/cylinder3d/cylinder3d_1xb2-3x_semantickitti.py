@@ -20,7 +20,7 @@ model = dict(       #关注重点，这里是传入的模型的block的组成
     ),
     voxel_encoder=dict(#@@@@编码器模块，也是之后要修改的地方
         type='SegVFE',
-        feat_channels=[64, 128, 256, 256],
+        feat_channels=[64, 128, 256, 256],#加一层试试，2024年3月28日修改，尝试修改feature层数
         in_channels=6,
         with_voxel_center=True,
         feat_compression=16,

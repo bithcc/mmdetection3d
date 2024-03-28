@@ -105,23 +105,23 @@ class Det3DDataPreprocessor(DetDataPreprocessor):
         super(Det3DDataPreprocessor, self).__init__(
             mean=mean,
             std=std,
-            pad_size_divisor=pad_size_divisor,
-            pad_value=pad_value,
-            pad_mask=pad_mask,
-            mask_pad_value=mask_pad_value,
+            pad_size_divisor=pad_size_divisor, #1
+            pad_value=pad_value, #0
+            pad_mask=pad_mask, 
+            mask_pad_value=mask_pad_value, #0
             pad_seg=pad_seg,
-            seg_pad_value=seg_pad_value,
+            seg_pad_value=seg_pad_value, #255
             bgr_to_rgb=bgr_to_rgb,
             rgb_to_bgr=rgb_to_bgr,
-            boxtype2tensor=boxtype2tensor,
+            boxtype2tensor=boxtype2tensor, #True
             non_blocking=non_blocking,
             batch_augments=batch_augments)
-        self.voxel = voxel
-        self.voxel_type = voxel_type
-        self.batch_first = batch_first
+        self.voxel = voxel #True
+        self.voxel_type = voxel_type #cylindrical
+        self.batch_first = batch_first #True
         self.max_voxels = max_voxels
         if voxel:
-            self.voxel_layer = VoxelizationByGridShape(**voxel_layer)
+            self.voxel_layer = VoxelizationByGridShape(**voxel_layer) #grid shape,point_cloud_range,max_num_points,max_voxels
 
     def forward(self,#@@@@前向传播
                 data: Union[dict, List[dict]],
@@ -417,9 +417,9 @@ class Det3DDataPreprocessor(DetDataPreprocessor):
                     (polar_res_clamp - min_bound) / polar_res_clamp.new_tensor(
                         self.voxel_layer.voxel_size)).int()
                 self.get_voxel_seg(res_coors, data_sample)
-                res_coors = F.pad(res_coors, (1, 0), mode='constant', value=i)
+                res_coors = F.pad(res_coors, (1, 0), mode='constant', value=i)#给体素坐标左侧添加一列，右侧增加零列，值为i，也就是在batch中的第几张，用来给体素增加索引
                 res_voxels = torch.cat((polar_res, res[:, :2], res[:, 3:]),
-                                       dim=-1)
+                                       dim=-1)#给柱坐标添加原始x，y，强度信息
                 voxels.append(res_voxels)
                 coors.append(res_coors)
             voxels = torch.cat(voxels, dim=0)

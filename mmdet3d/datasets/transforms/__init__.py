@@ -9,7 +9,7 @@ from .loading import (LidarDet3DInferencerLoader, LoadAnnotations3D,
                       PointSegClassMapping)
 from .test_time_aug import MultiScaleFlipAug3D
 # yapf: disable
-from .transforms_3d import (AffineResize, BackgroundPointsFilter,
+from .transforms_3d import (AffineResize, BackgroundPointsFilter,#对点云进行数据增强的方法
                             GlobalAlignment, GlobalRotScaleTrans,
                             IndoorPatchPointSample, IndoorPointSample,
                             LaserMix, MultiViewWrapper, ObjectNameFilter,

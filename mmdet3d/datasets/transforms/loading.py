@@ -861,7 +861,7 @@ class LoadAnnotations3D(LoadAnnotations):
         self.with_seg_3d = with_seg_3d #true
         self.with_panoptic_3d = with_panoptic_3d
         self.seg_3d_dtype = eval(seg_3d_dtype)
-        self.seg_offset = seg_offset
+        self.seg_offset = seg_offset #65536
         self.dataset_type = dataset_type
 
     def _load_bboxes_3d(self, results: dict) -> dict:

@@ -233,21 +233,27 @@ class _DynamicScatter(Function):
         #     _,indices_to_original = torch.sort(indices_pos)
 
         #     voxel_feats = sum_temp_feats[indices_to_original]
-        import random
-        if random.random() < 0.5:
-            _,indices_pos = torch.sort(voxel_coors[:,1],descending=False) #按phi正排序
-            temp_coors_pos = voxel_coors[indices_pos]
-            temp_feats_pos = voxel_feats[indices_pos]
 
-            _,indices_neg = torch.sort(voxel_coors[:,1],descending=True)  #按phi逆排序
-            temp_coors_neg = voxel_coors[indices_neg]
-            temp_feats_neg = voxel_feats[indices_neg]
+        #下面这段代码的作用是对0degree附近的进行修改
+        # import random
+        # if random.random() < 1.0:
+        #     _,indices_pos = torch.sort(voxel_coors[:,1],descending=False) #按phi正排序
+        #     temp_coors_pos = voxel_coors[indices_pos]
+        #     temp_feats_pos = voxel_feats[indices_pos]
 
-            sum_temp_feats = temp_feats_pos + temp_feats_neg
-            num_rows_to_replace=sum_temp_feats.shape[0]//6  #以0degree为界，取60degree的范围进行mix
-            indices_to_replace = indices_pos[:num_rows_to_replace]
+        #     _,indices_neg = torch.sort(voxel_coors[:,1],descending=True)  #按phi逆排序
+        #     temp_coors_neg = voxel_coors[indices_neg]
+        #     temp_feats_neg = voxel_feats[indices_neg]
+
+        #     sum_temp_feats = temp_feats_pos + temp_feats_neg
+        #     num_rows_to_replace_left=sum_temp_feats.shape[0]//12  #以0degree为界，取60degree的范围进行mix
+        #     num_rows_to_replace_right=sum_temp_feats.shape[0]-num_rows_to_replace_left
+
+        #     indices_to_replace_left = indices_pos[:num_rows_to_replace_left]
+        #     indices_to_replace_right = indices_pos[num_rows_to_replace_right:]
             
-            voxel_feats[indices_to_replace] = sum_temp_feats[:num_rows_to_replace]
+        #     voxel_feats[indices_to_replace_left] = sum_temp_feats[:num_rows_to_replace_left]
+        #     voxel_feats[indices_to_replace_right] = sum_temp_feats[num_rows_to_replace_right:]
             
 
             

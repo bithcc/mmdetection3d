@@ -2370,7 +2370,7 @@ class MultiViewWrapper(BaseTransform):
 
 
 @TRANSFORMS.register_module()
-class PolarMix(BaseTransform):
+class PolarMix(BaseTransform):#polarmix
     """PolarMix data augmentation.
 
     The polarmix transform steps are as follows:
@@ -2574,7 +2574,7 @@ class LaserMix(BaseTransform):
         assert is_list_of(num_areas, int), \
             'num_areas should be a list of int.'
         self.num_areas = num_areas
-
+#2024年3月27日看到了这里，进入到了train过程中
         assert len(pitch_angles) == 2, \
             'The length of pitch_angles should be 2, ' \
             f'but got {len(pitch_angles)}.'

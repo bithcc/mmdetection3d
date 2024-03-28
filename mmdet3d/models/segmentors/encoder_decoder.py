@@ -93,7 +93,7 @@ class EncoderDecoder3D(Base3DSegmentor):
         if neck is not None:
             self.neck = MODELS.build(neck)
         self._init_decode_head(decode_head)
-        self._init_auxiliary_head(auxiliary_head)#关注重点
+        self._init_auxiliary_head(auxiliary_head)#关注重点  3月27日看一看
         self._init_loss_regularization(loss_regularization)
 
         self.train_cfg = train_cfg

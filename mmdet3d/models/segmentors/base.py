@@ -62,7 +62,7 @@ class Base3DSegmentor(BaseModel, metaclass=ABCMeta):
         """Placeholder for encode images with backbone and decode into a
         semantic segmentation map of the same size as input."""
         pass
-
+    #2024年3月26日，segmentors的前向传播过程
     def forward(self,
                 inputs: Union[dict, List[dict]],
                 data_samples: OptSampleList = None,

@@ -54,7 +54,7 @@ class Cylinder3D(EncoderDecoder3D):#@@@@Cylinder3d的分割算法网络
                  test_cfg: OptConfigType = None,
                  data_preprocessor: OptConfigType = None,
                  init_cfg: OptMultiConfig = None) -> None:
-        super(Cylinder3D, self).__init__(
+        super(Cylinder3D, self).__init__(#调用config中的配置进行网络构建
             backbone=backbone,
             decode_head=decode_head,
             neck=neck,
@@ -66,9 +66,9 @@ class Cylinder3D(EncoderDecoder3D):#@@@@Cylinder3d的分割算法网络
             init_cfg=init_cfg)
 
         self.voxel_encoder = MODELS.build(voxel_encoder)
-
+    #2024年3月26日，看到了这里，点云特征提取
     def extract_feat(self, batch_inputs: dict) -> Tensor:
-        """Extract features from points."""
+        """Extract features from points."""#2024年3月28日看到了这里，读取完数据进行特征提取
         encoded_feats = self.voxel_encoder(batch_inputs['voxels']['voxels'],
                                            batch_inputs['voxels']['coors'])
         batch_inputs['voxels']['voxel_coors'] = encoded_feats[1]
@@ -95,7 +95,7 @@ class Cylinder3D(EncoderDecoder3D):#@@@@Cylinder3d的分割算法网络
         Returns:
             Dict[str, Tensor]: A dictionary of loss components.
         """
-
+        #2024年3月26日，获取输入特征后送入backbone中
         # extract features using backbone
         x = self.extract_feat(batch_inputs_dict)
         losses = dict()

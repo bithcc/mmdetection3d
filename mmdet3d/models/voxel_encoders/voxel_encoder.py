@@ -600,8 +600,8 @@ class SegVFE(nn.Module):#@@@@SegVFE 关注重点
         """Forward functions.
 
         Args:
-            features (Tensor): Features of voxels, shape is NxC.#这个地方难道不是点云特征？
-            coors (Tensor): Coordinates of voxels, shape is  Nx(1+NDim).
+            features (Tensor): Features of voxels, shape is NxC.#点云特征,C包括rho,phi,z,x,y,强度
+            coors (Tensor): Coordinates of voxels, shape is  Nx(1+NDim). #batch中的序列号,三个维度的坐标信息
 
         Returns:
             tuple: If `return_point_feats` is False, returns voxel features and
@@ -613,7 +613,7 @@ class SegVFE(nn.Module):#@@@@SegVFE 关注重点
         # Find distance of x, y, and z from voxel center
         if self._with_voxel_center:
             f_center = features.new_zeros(size=(features.size(0), 3))
-            f_center[:, 0] = features[:, 0] - (
+            f_center[:, 0] = features[:, 0] - (   
                 coors[:, 1].type_as(features) * self.vx + self.x_offset)
             f_center[:, 1] = features[:, 1] - (
                 coors[:, 2].type_as(features) * self.vy + self.y_offset)
@@ -626,7 +626,7 @@ class SegVFE(nn.Module):#@@@@SegVFE 关注重点
         if self.pre_norm is not None:
             features = self.pre_norm(features)
 
-        point_feats = []
+        point_feats = []  #3月28日看到了这里
         for vfe in self.vfe_layers:
             features = vfe(features)
             point_feats.append(features)
@@ -635,6 +635,6 @@ class SegVFE(nn.Module):#@@@@SegVFE 关注重点
         if self.compression_layers is not None:
             voxel_feats = self.compression_layers(voxel_feats)
 
-        if self.return_point_feats:
+        if self.return_point_feats:#point_feats可不可以在这里进行使用？3月28日 @@@@
             return voxel_feats, voxel_coors, point_feats
         return voxel_feats, voxel_coors

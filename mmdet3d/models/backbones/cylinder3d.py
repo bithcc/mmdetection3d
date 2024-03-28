@@ -414,6 +414,9 @@ class Asymm3DSpconv(BaseModule):
                  base_channels: int = 16,
                  backbone_depth: int = 4,
                  height_pooing: List[bool] = [True, True, False, False],
+                #2024年3月28日修改，尝试修改backbone层数
+                #  backbone_depth: int = 5,
+                #  height_pooing: List[bool] = [True, True, False,False, False],
                  norm_cfg: ConfigType = dict(
                      type='BN1d', eps=1e-3, momentum=0.01),
                  init_cfg=None):

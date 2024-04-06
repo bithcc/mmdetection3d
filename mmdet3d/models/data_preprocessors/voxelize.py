@@ -215,7 +215,7 @@ class _DynamicScatter(Function):
         (voxel_feats, voxel_coors, point2voxel_map,
          voxel_points_count) = results
          #对柱状体素沿着角度维度进行排序，按正方向和逆方向结果进行相应特征相加，并返回原来的特征中
-         #2024年3月26日修改@@@@bithcc
+         #2024年3月26日修改@@@@bithcc，修改了phimix
          #下面这段代码的作用是进行全局的phimix，可以调整概率
         # import random
         # if random.random() < 1.0:
@@ -236,7 +236,7 @@ class _DynamicScatter(Function):
 
         #下面这段代码的作用是对0degree附近的进行修改
         # import random
-        # if random.random() < 1.0:
+        # if random.random() < 0.5:
         #     _,indices_pos = torch.sort(voxel_coors[:,1],descending=False) #按phi正排序
         #     temp_coors_pos = voxel_coors[indices_pos]
         #     temp_feats_pos = voxel_feats[indices_pos]
@@ -246,7 +246,7 @@ class _DynamicScatter(Function):
         #     temp_feats_neg = voxel_feats[indices_neg]
 
         #     sum_temp_feats = temp_feats_pos + temp_feats_neg
-        #     num_rows_to_replace_left=sum_temp_feats.shape[0]//12  #以0degree为界，取60degree的范围进行mix
+        #     num_rows_to_replace_left=sum_temp_feats.shape[0]//4  #以0degree为界，取60degree的范围进行mix
         #     num_rows_to_replace_right=sum_temp_feats.shape[0]-num_rows_to_replace_left
 
         #     indices_to_replace_left = indices_pos[:num_rows_to_replace_left]

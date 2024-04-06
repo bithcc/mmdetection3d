@@ -184,7 +184,7 @@ class Det3DVisualizationHook(Hook):
                 "'data_sample' must contain 'img_path' or 'lidar_path'"
 
             out_file = o3d_save_path = None
-
+            ply_save_path = None #bithcc@@@@3月30日
             if self.vis_task in [
                     'mono_det', 'multi-view_det', 'multi-modality_det'
             ]:
@@ -216,15 +216,16 @@ class Det3DVisualizationHook(Hook):
                     'lidar_path is not in data_sample'
                 lidar_path = data_sample.lidar_path
                 num_pts_feats = data_sample.num_pts_feats
-                pts_bytes = get(lidar_path, backend_args=self.backend_args)
+                pts_bytes = get(lidar_path, backend_args=self.backend_args)#3月30日，读取点云数据
                 points = np.frombuffer(pts_bytes, dtype=np.float32)
                 points = points.reshape(-1, num_pts_feats)
                 data_input['points'] = points
                 if self.test_out_dir is not None:
                     o3d_save_path = osp.basename(lidar_path).split(
-                        '.')[0] + '.png'
+                        '.')[0] + '.png'#3月30日，保存测试数据
                     o3d_save_path = osp.join(self.test_out_dir, o3d_save_path)
-
+                    ply_save_path=o3d_save_path.replace('png','ply')#bithcc@@@@3月30日
+                
             self._visualizer.add_datasample(
                 'test sample',
                 data_input,
@@ -235,7 +236,9 @@ class Det3DVisualizationHook(Hook):
                 vis_task=self.vis_task,
                 wait_time=self.wait_time,
                 pred_score_thr=self.score_thr,
-                out_file=out_file,
+                out_file=out_file,#这里是不是可以加一下？
+                ply_save_path=ply_save_path,#bithcc@@@@3月30日
                 o3d_save_path=o3d_save_path,
                 step=self._test_index,
-                show_pcd_rgb=self.show_pcd_rgb)
+                show_pcd_rgb=self.show_pcd_rgb,
+                )

@@ -587,7 +587,7 @@ class SegVFE(nn.Module):#@@@@SegVFE 关注重点
                         nn.Linear(in_filters, out_filters), norm_layer,
                         nn.ReLU(inplace=True)))
         self.vfe_layers = nn.ModuleList(vfe_layers)
-        self.vfe_scatter = DynamicScatter(self.voxel_size,#关注重点
+        self.vfe_scatter = DynamicScatter(self.voxel_size,#关注重点,3月29日
                                           self.point_cloud_range,
                                           (mode != 'max'))
         self.compression_layers = None

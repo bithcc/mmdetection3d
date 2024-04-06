@@ -199,7 +199,7 @@ def lovasz_softmax_flat(
         return probs * 0.
     C = probs.size(1)
     losses = []
-    class_to_sum = list(range(C)) if classes in ['all', 'present'] else classes
+    class_to_sum = list(range(C)) if classes in ['all', 'present'] else classes #[0,...19]
     for c in class_to_sum:
         fg = (labels == c).float()  # foreground for class c
         if (classes == 'present' and fg.sum() == 0):
@@ -215,7 +215,7 @@ def lovasz_softmax_flat(
         perm = perm.data
         fg_sorted = fg[perm]
         loss = torch.dot(errors_sorted, lovasz_grad(fg_sorted))
-        if class_weight is not None:
+        if class_weight is not None:  #这里是对不同的类别进行不同的权重，3月29日
             loss *= class_weight[c]
         losses.append(loss)
     return torch.stack(losses).mean()
@@ -267,9 +267,9 @@ def lovasz_softmax(probs: torch.Tensor,
         ]
         loss = weight_reduce_loss(
             torch.stack(loss), None, reduction, avg_factor)
-    else:
-        loss = lovasz_softmax_flat(
-            *flatten_probs(probs, labels, ignore_index),
+    else:#从这里开始
+        loss = lovasz_softmax_flat(  
+            *flatten_probs(probs, labels, ignore_index),   #valid_probs,valid_labels
             classes=classes,
             class_weight=class_weight)
     return loss

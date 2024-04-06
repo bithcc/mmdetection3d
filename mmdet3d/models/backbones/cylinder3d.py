@@ -80,7 +80,7 @@ class AsymmResBlock(BaseModule):
         self.act1_1 = build_activation_layer(act_cfg)
         self.bn1_1 = build_norm_layer(norm_cfg, out_channels)[1]
 
-    def forward(self, x: SparseConvTensor) -> SparseConvTensor:
+    def forward(self, x: SparseConvTensor) -> SparseConvTensor:#3月29日,sparseconvtensor forward,这里之后进行修改
         """Forward pass."""
         shortcut = self.conv0_0(x)
 
@@ -460,7 +460,7 @@ class Asymm3DSpconv(BaseModule):
             indice_key='ddcm',
             norm_cfg=norm_cfg)
 
-    def forward(self, voxel_features: Tensor, coors: Tensor,
+    def forward(self, voxel_features: Tensor, coors: Tensor,#3月29日
                 batch_size: int) -> SparseConvTensor:
         """Forward pass."""
         coors = coors.int()
@@ -474,7 +474,7 @@ class Asymm3DSpconv(BaseModule):
             down_pool, down_skip = self.down_block_list[i](down_pool)
             down_skip_list.append(down_skip)
 
-        up = down_pool
+        up = down_pool#3月29号看到了这里
         for i in range(self.backbone_depth - 1, -1, -1):
             up = self.up_block_list[i](up, down_skip_list[i])
 
@@ -482,3 +482,4 @@ class Asymm3DSpconv(BaseModule):
         ddcm.features = torch.cat((ddcm.features, up.features), 1)
 
         return ddcm
+#这里进行修改，修改backbone

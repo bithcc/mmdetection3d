@@ -184,13 +184,16 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
 
     @master_only
     def set_points(self,
+                   
                    points: np.ndarray,
                    pcd_mode: int = 0,
                    vis_mode: str = 'replace',
                    frame_cfg: dict = dict(size=1, origin=[0, 0, 0]),
                    points_color: Tuple[float] = (0.8, 0.8, 0.8),
                    points_size: int = 2,
-                   mode: str = 'xyz') -> None:
+                   mode: str = 'xyz',
+                   ply_save_path :Optional[str] = None,#bithcc@@@@3月30日
+                   ) -> None:
         """Set the point cloud to draw.
 
         Args:
@@ -222,7 +225,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
             self.o3d_vis = self._initialize_o3d_vis()
 
         # for now we convert points into depth mode for visualization
-        if pcd_mode != Coord3DMode.DEPTH:
+        if pcd_mode != Coord3DMode.DEPTH:#3月30日，depth
             points = Coord3DMode.convert(points, pcd_mode, Coord3DMode.DEPTH)
 
         if hasattr(self, 'pcd') and vis_mode != 'add':
@@ -248,7 +251,10 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
                 points_colors /= 255.0
         else:
             raise NotImplementedError
-
+        #保存测试结果为ply形式
+        if(ply_save_path is not None and int(ply_save_path.split('.')[0].split('/')[-1]) < 100):#bithcc@@@@3月30日
+           pcd.colors = o3d.utility.Vector3dVector(points_colors)#bithcc@@@@3月30日
+           o3d.io.write_point_cloud(ply_save_path,pcd)#bithcc@@@@3月30日
         # create coordinate frame
         mesh_frame = geometry.TriangleMesh.create_coordinate_frame(**frame_cfg)
         self.o3d_vis.add_geometry(mesh_frame)
@@ -579,7 +585,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
             face_colors=edge_colors)
 
     @master_only
-    def draw_seg_mask(self, seg_mask_colors: np.ndarray) -> None:
+    def draw_seg_mask(self, seg_mask_colors: np.ndarray,ply_save_path:Optional[str] = None) -> None:
         """Add segmentation mask to visualizer via per-point colorization.
 
         Args:
@@ -590,7 +596,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
         # we can't draw the colors on existing points
         # in case gt and pred mask would overlap
         # instead we set a large offset along x-axis for each seg mask
-        if hasattr(self, 'pcd'):
+        if hasattr(self, 'pcd'):#3月30日，绘制gt,pred
             offset = (np.array(self.pcd.points).max(0) -
                       np.array(self.pcd.points).min(0))[0] * 1.2
             mesh_frame = geometry.TriangleMesh.create_coordinate_frame(
@@ -601,7 +607,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
             offset = 0
         seg_points = copy.deepcopy(seg_mask_colors)
         seg_points[:, 0] += offset
-        self.set_points(seg_points, pcd_mode=2, vis_mode='add', mode='xyzrgb')
+        self.set_points(seg_points, pcd_mode=2, vis_mode='add', mode='xyzrgb',ply_save_path=ply_save_path)#bithcc@@@@3月30日
 
     def _draw_instances_3d(self,
                            data_input: dict,
@@ -748,7 +754,8 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
                           points: Union[Tensor, np.ndarray],
                           pts_seg: PointData,
                           palette: Optional[List[tuple]] = None,
-                          keep_index: Optional[int] = None) -> None:
+                          keep_index: Optional[int] = None,
+                          ply_save_path: Optional[str] = None) -> None: #bithcc@@@@3月30日
         """Draw 3D semantic mask of GT or prediction.
 
         Args:
@@ -773,7 +780,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
         pts_color = palette[pts_sem_seg]
         seg_color = np.concatenate([points[:, :3], pts_color], axis=1)
 
-        self.draw_seg_mask(seg_color)
+        self.draw_seg_mask(seg_color,ply_save_path)#bithcc@@@@3月30日
 
     @master_only
     def show(self,
@@ -855,50 +862,50 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
                         super().show(drawn_img, win_name, wait_time,
                                      continue_key)
 
-        if hasattr(self, 'o3d_vis'):
-            if hasattr(self, 'view_port'):
-                self.view_control.convert_from_pinhole_camera_parameters(
-                    self.view_port)
-            self.flag_exit = not self.o3d_vis.poll_events()
-            self.o3d_vis.update_renderer()
-            # if not hasattr(self, 'view_control'):
-            #     self.o3d_vis.create_window()
-            #     self.view_control = self.o3d_vis.get_view_control()
-            self.view_port = \
-                self.view_control.convert_to_pinhole_camera_parameters()  # noqa: E501
-            if wait_time != -1:
-                self.last_time = time.time()
-                while time.time(
-                ) - self.last_time < wait_time and self.o3d_vis.poll_events():
-                    self.o3d_vis.update_renderer()
-                    self.view_port = \
-                        self.view_control.convert_to_pinhole_camera_parameters()  # noqa: E501
-                while self.flag_pause and self.o3d_vis.poll_events():
-                    self.o3d_vis.update_renderer()
-                    self.view_port = \
-                        self.view_control.convert_to_pinhole_camera_parameters()  # noqa: E501
+        # if hasattr(self, 'o3d_vis'): #bithcc@@@@3月30日，注释掉可视化
+        #     if hasattr(self, 'view_port'):
+        #         self.view_control.convert_from_pinhole_camera_parameters(
+        #             self.view_port)
+        #     self.flag_exit = not self.o3d_vis.poll_events()
+        #     self.o3d_vis.update_renderer()
+        #     # if not hasattr(self, 'view_control'):
+        #         # self.o3d_vis.create_window()
+        #         # self.view_control = self.o3d_vis.get_view_control()
+        #     self.view_port = \
+        #         self.view_control.convert_to_pinhole_camera_parameters()  # noqa: E501
+        #     if wait_time != -1:
+        #         self.last_time = time.time()
+        #         while time.time(
+        #         ) - self.last_time < wait_time and self.o3d_vis.poll_events():
+        #             self.o3d_vis.update_renderer()
+        #             self.view_port = \
+        #                 self.view_control.convert_to_pinhole_camera_parameters()  # noqa: E501
+        #         while self.flag_pause and self.o3d_vis.poll_events():
+        #             self.o3d_vis.update_renderer()
+        #             self.view_port = \
+        #                 self.view_control.convert_to_pinhole_camera_parameters()  # noqa: E501
 
-            else:
-                while not self.flag_next and self.o3d_vis.poll_events():
-                    self.o3d_vis.update_renderer()
-                    self.view_port = \
-                        self.view_control.convert_to_pinhole_camera_parameters()  # noqa: E501
-                self.flag_next = False
-            self.o3d_vis.clear_geometries()
-            try:
-                del self.pcd
-            except (KeyError, AttributeError):
-                pass
-            if save_path is not None:
-                if not (save_path.endswith('.png')
-                        or save_path.endswith('.jpg')):
-                    save_path += '.png'
-                self.o3d_vis.capture_screen_image(save_path)
-            if self.flag_exit:
-                self.o3d_vis.destroy_window()
-                self.o3d_vis.close()
-                self._clear_o3d_vis()
-                sys.exit(0)
+        #     else:
+        #         while not self.flag_next and self.o3d_vis.poll_events():
+        #             self.o3d_vis.update_renderer()
+        #             self.view_port = \
+        #                 self.view_control.convert_to_pinhole_camera_parameters()  # noqa: E501
+        #         self.flag_next = False
+        #     self.o3d_vis.clear_geometries()
+        #     try:
+        #         del self.pcd
+        #     except (KeyError, AttributeError):
+        #         pass
+        #     if save_path is not None:
+        #         if not (save_path.endswith('.png')
+        #                 or save_path.endswith('.jpg')):
+        #             save_path += '.png'
+        #         self.o3d_vis.capture_screen_image(save_path)
+        #     if self.flag_exit:
+        #         self.o3d_vis.destroy_window()
+        #         self.o3d_vis.close()
+        #         self._clear_o3d_vis()
+        #         sys.exit(0)
 
     def escape_callback(self, vis):
         self.o3d_vis.clear_geometries()
@@ -940,7 +947,8 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
                        vis_task: str = 'mono_det',
                        pred_score_thr: float = 0.3,
                        step: int = 0,
-                       show_pcd_rgb: bool = False) -> None:
+                       show_pcd_rgb: bool = False,
+                       ply_save_path: Optional[str] = None) -> None:#bithcc@@@@
         """Draw datasample and save to all backends.
 
         - If GT and prediction are plotted at the same time, they are displayed
@@ -997,7 +1005,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
         ]:
             self.o3d_vis = self._initialize_o3d_vis(show=show)
 
-        if draw_gt and data_sample is not None:
+        if draw_gt and data_sample is not None:#3月30日 draw_gt，visualize
             if 'gt_instances_3d' in data_sample:
                 gt_data_3d = self._draw_instances_3d(
                     data_input, data_sample.gt_instances_3d,
@@ -1052,7 +1060,7 @@ class Det3DLocalVisualizer(DetLocalVisualizer):
                 assert 'points' in data_input
                 self._draw_pts_sem_seg(data_input['points'],
                                        data_sample.pred_pts_seg, palette,
-                                       keep_index)
+                                       keep_index,ply_save_path)#bithcc@@@@
 
         # monocular 3d object detection image
         if vis_task in ['mono_det', 'multi-modality_det']:

@@ -107,7 +107,7 @@ class Cylinder3DHead(Base3DDecodeHead):
             Dict[str, Tensor]: A dictionary of loss components.
         """
 
-        gt_semantic_segs = [
+        gt_semantic_segs = [#3月29号看到了这里
             data_sample.gt_pts_seg.voxel_semantic_mask
             for data_sample in batch_data_samples
         ]

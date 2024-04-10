@@ -5,6 +5,7 @@ from mmdet3d.models.data_preprocessors import Det3DDataPreprocessor
 from mmdet3d.models.decode_heads.cylinder3d_head import Cylinder3DHead
 from mmdet3d.models.losses import LovaszLoss
 from mmdet3d.models.voxel_encoders import SegVFE
+from mmdet3d.models.backbones import Base_3DSpconv#4月8日 bithcc@@@@
 
 grid_shape = [480, 360, 32]
 model = dict(

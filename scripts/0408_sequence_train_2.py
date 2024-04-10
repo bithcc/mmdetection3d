@@ -2,10 +2,10 @@ import os
 import sys
 import time
 #用于排队进行模型训练
-cmd = 'CUDA_VISIBLE_DEVICES=5 /home/ps/miniconda3/envs/hcc/bin/python \
+cmd = 'CUDA_VISIBLE_DEVICES=5 /home/ps/miniconda3/envs/hcc_1/bin/python \
        /home/ps/huichenchen/mmdetection3d/tools/train.py \
-       /home/ps/huichenchen/mmdetection3d/configs/cylinder3d/cylinder3d_1xb2-3x_semantickitti.py \
-       --work-dir /home/ps/huichenchen/mmdetection3d/results2/cylinder3d/1xb2_turn7'
+       /home/ps/huichenchen/mmdetection3d/configs/cylinder3d/cylinder3d_1xb2-test.py \
+       --work-dir /home/ps/huichenchen/mmdetection3d/results2/cylinder3d/1xb2_base3d_3'
 
 
 def gpu_info(gpu_index=5):

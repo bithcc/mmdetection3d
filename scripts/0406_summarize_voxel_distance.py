@@ -30,7 +30,8 @@ def get_bin_files(directory):
 
 # Parameters
 # directory_path = '/home/ps/huichenchen/mmdetection3d/scripts'
-directory_path = '/mnt/datasets/huichenchen/SemanticKitti/dataset/sequences'
+directory_path = '/mnt/datasets/huichenchen/SemanticKitti/dataset/sequences/08'
+# directory_path = '/home/ps/huichenchen/mmdetection3d/results2/test'
 voxel_size_rho = 0.1
 voxel_size_phi = 360 / 360  # 1 degree
 voxel_size_z = 0.1
@@ -72,4 +73,4 @@ plt.ylabel('Proportion of Accumulated Valid Voxels')
 plt.title('Proportion of Accumulated Valid Voxels by Distance')
 plt.legend()
 plt.grid(True)
-plt.savefig('/home/ps/huichenchen/mmdetection3d/results2/0406_compare_voxel_cylinder.png')
+plt.savefig('/home/ps/huichenchen/mmdetection3d/results2/test/0408_compare08.png')

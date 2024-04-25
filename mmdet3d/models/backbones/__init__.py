@@ -1,6 +1,10 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from mmdet.models.backbones import SSDVGG, HRNet, ResNet, ResNetV1d, ResNeXt#@@@@所有可以使用的backbone
 
+from .cylinder3d_parallel_noddcm import Parallel_3DSpconv #4月22日 bithcc@@@@
+from .cylinder3d_linear_noddcm import Linear_3DSpconv  #4月22日 bithcc@@@@
+from .cylinder3d_test_noddcm import Basenoddcm_3DSpconv#4月15日 bithcc@@@@
+from .cylinder3d_multinoddcm import Multinoddcm_3DSpconv#4月12日 bithcc@@@@
 from .cylinder3d_multiplus import Multiplus_3DSpconv #4月10日 bithcc@@@@
 from .cylinder3d_multilite import Multilite_3DSpconv #4月8日 bithcc@@@@
 from .cylinder3d_multi import Multi_3DSpconv #4月8日 bithcc@@@@

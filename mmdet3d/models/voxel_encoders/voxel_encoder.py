@@ -567,7 +567,7 @@ class SegVFE(nn.Module):#@@@@SegVFE 关注重点
         self.vx = self.voxel_size[0]
         self.vy = self.voxel_size[1]
         self.vz = self.voxel_size[2]
-        self.x_offset = self.vx / 2 + point_cloud_range[0]#offset是什么？
+        self.x_offset = self.vx / 2 + point_cloud_range[0]#offset是什么？是偏移
         self.y_offset = self.vy / 2 + point_cloud_range[1]
         self.z_offset = self.vz / 2 + point_cloud_range[2]
 

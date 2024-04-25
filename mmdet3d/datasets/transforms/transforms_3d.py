@@ -2574,7 +2574,7 @@ class LaserMix(BaseTransform):
         assert is_list_of(num_areas, int), \
             'num_areas should be a list of int.'
         self.num_areas = num_areas
-#2024年3月27日看到了这里，进入到了train过程中
+ #2024年3月27日看到了这里，进入到了train过程中
         assert len(pitch_angles) == 2, \
             'The length of pitch_angles should be 2, ' \
             f'but got {len(pitch_angles)}.'
@@ -2683,3 +2683,108 @@ class LaserMix(BaseTransform):
         repr_str += f'pre_transform={self.pre_transform}, '
         repr_str += f'prob={self.prob})'
         return repr_str
+
+@TRANSFORMS.register_module()#bithcc@@@@4月20日
+class DistanceMix(BaseTransform):
+    """DistanceMix data augmentation.
+
+    This transform performs the following steps:
+
+    1. Another random point cloud is picked by dataset.
+    2. Divide point clouds into segments based on distance from origin.
+    3. Swap segments between two point clouds.
+
+    Required Keys:
+
+    - points (:obj:`BasePoints`)
+    - pts_semantic_mask (np.int64)
+    - dataset (:obj:`BaseDataset`)
+
+    Modified Keys:
+
+    - points (:obj:`BasePoints`)
+    - pts_semantic_mask (np.int64)
+
+    Args:
+        distance_bins (List[float]): List of distance boundaries for segmentation.
+        swap_ratio (float): Probability of swapping each segment. Defaults to 0.5.
+        prob (float): The probability of applying the transformation. Defaults to 1.0.
+    """
+
+    def __init__(self,
+                 distance_bins: List[float],
+                 swap_ratio: float = 0.5,
+                 pre_transform: Optional[Sequence[dict]] = None,
+                 prob: float = 1.0) ->None:
+        self.distance_bins = distance_bins
+        self.swap_ratio = swap_ratio
+        self.prob = prob
+        if pre_transform is None:
+            self.pre_transform = None
+        else:
+            self.pre_transform = Compose(pre_transform)
+
+    def distance_mix_transform(self, input_dict: dict, mix_results: dict) -> dict:
+        """DistanceMix transform function."""
+        mix_points = mix_results['points']
+        mix_pts_semantic_mask = mix_results['pts_semantic_mask']
+
+        points = input_dict['points']
+        pts_semantic_mask = input_dict['pts_semantic_mask']
+
+        # Compute radial distances for each point
+        distances = torch.sqrt(points.coord[:, 0]**2 + points.coord[:, 1]**2 )
+        mix_distances = torch.sqrt(mix_points.coord[:, 0]**2 + mix_points.coord[:, 1]**2 )
+
+        # Binning points by distance
+        bin_indices = torch.bucketize(distances, self.distance_bins, right=True)
+        mix_bin_indices = torch.bucketize(mix_distances, self.distance_bins, right=True)
+
+        # Segments to swap
+        for bin_index in torch.unique(bin_indices):
+            if torch.rand(1) < self.swap_ratio:
+                # Find indices for current bin
+                current_idx = (bin_indices == bin_index)
+                mix_current_idx = (mix_bin_indices == bin_index)
+
+                # Swap points
+                temp_points = points[current_idx].clone()
+                points[current_idx] = mix_points[mix_current_idx]
+                mix_points[mix_current_idx] = temp_points
+
+                # Swap masks
+                temp_mask = pts_semantic_mask[current_idx].clone()
+                pts_semantic_mask[current_idx] = mix_pts_semantic_mask[mix_current_idx]
+                mix_pts_semantic_mask[mix_current_idx] = temp_mask
+
+        input_dict['points'] = points
+        input_dict['pts_semantic_mask'] = pts_semantic_mask
+        return input_dict
+
+    def transform(self, input_dict: dict) -> dict:
+        """Apply DistanceMix transformation."""
+        if np.random.rand() > self.prob:
+            return input_dict
+
+        assert 'dataset' in input_dict, '`dataset` is needed to pass through DistanceMix, while not found.'
+        dataset = input_dict['dataset']
+
+        # Get index of another point cloud
+        index = np.random.randint(0, len(dataset))
+
+        mix_results = dataset.get_data_info(index)
+
+        if self.pre_transform is not None:
+            # pre_transform may also require dataset
+            mix_results.update({'dataset': dataset})
+            # before distancemix need to go through
+            # the necessary pre_transform
+            mix_results = self.pre_transform(mix_results)
+            mix_results.pop('dataset')
+
+        return self.distance_mix_transform(input_dict, mix_results)
+
+    def __repr__(self) -> str:
+        """String representation of the module."""
+        return f'{self.__class__.__name__}(distance_bins={self.distance_bins}, swap_ratio={self.swap_ratio}, pre_transform={self.pre_transform},prob={self.prob})'
+

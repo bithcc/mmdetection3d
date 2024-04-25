@@ -35,4 +35,4 @@ train_dataloader = dict(batch_size=4, )
 #   - `base_batch_size` = (8 GPUs) x (4 samples per GPU).
 # auto_scale_lr = dict(enable=False, base_batch_size=32)
 
-default_hooks = dict(checkpoint=dict(type='CheckpointHook', interval=5))
+default_hooks = dict(checkpoint=dict(type='CheckpointHook', interval=1))

@@ -17,7 +17,7 @@ from .transforms_3d import (AffineResize, BackgroundPointsFilter,#对点云进�
                             PhotoMetricDistortion3D, PointSample, PointShuffle,
                             PointsRangeFilter, PolarMix, RandomDropPointsColor,
                             RandomFlip3D, RandomJitterPoints, RandomResize3D,
-                            RandomShiftScale, Resize3D, VoxelBasedPointSampler)
+                            RandomShiftScale, Resize3D, VoxelBasedPointSampler,DistanceMix)#bithcc@@@@ 4月20日
 
 __all__ = [#@@@@对lidar进行数据增强的方法
     'ObjectSample', 'RandomFlip3D', 'ObjectNoise', 'GlobalRotScaleTrans',
@@ -31,6 +31,6 @@ __all__ = [#@@@@对lidar进行数据增强的方法
     'RandomDropPointsColor', 'RandomJitterPoints', 'AffineResize',
     'RandomShiftScale', 'LoadPointsFromDict', 'Resize3D', 'RandomResize3D',
     'MultiViewWrapper', 'PhotoMetricDistortion3D', 'MonoDet3DInferencerLoader',
-    'LidarDet3DInferencerLoader', 'PolarMix', 'LaserMix',
+    'LidarDet3DInferencerLoader', 'PolarMix', 'LaserMix','DistanceMix',#bithcc@@@@ 4月20日
     'MultiModalityDet3DInferencerLoader'
 ]

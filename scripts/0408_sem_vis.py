@@ -83,7 +83,7 @@ def assign_colors_to_labels(labels, color_map):
 
 bin_file = "/home/ps/huichenchen/mmdetection3d/data/semantickitti/sequences/08/velodyne/000000.bin"
 label_file = "/home/ps/huichenchen/mmdetection3d/data/semantickitti/sequences/08/labels/000000.label"
-output_ply_file = "/home/ps/huichenchen/mmdetection3d/results2/test/output.ply"
+output_ply_file = "/home/ps/huichenchen/mmdetection3d/results2/0411_bin_output.ply"
 
 # 假设你已经有了点云数据point_cloud，以及color_map和labels_map
 # 读取并应用标签映射

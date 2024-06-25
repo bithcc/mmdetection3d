@@ -71,17 +71,23 @@ distance_ranges = {
 }
 
 proportions = calculate_voxel_proportions(bin_files, length_voxel_size, width_voxel_size, distance_ranges)
+print(proportions)
 
 # Plotting
 bars = plt.bar(proportions.keys(), proportions.values())
-plt.ylabel('Proportion of Actual to Theoretical Voxels')
-plt.xlabel('Distance Range')
-plt.title('Voxel Distribution by Distance')
+# plt.ylabel('Proportion of Actual to Theoretical Voxels')
+# plt.xlabel('Distance Range')
+# plt.title('Voxel Distribution by Distance')
+
+from matplotlib import font_manager
+my_font = font_manager.FontProperties(fname = "/usr/share/fonts/MyFonts/simhei.ttf")
+plt.ylabel('实际体素数与理论最大数值的比例',fontproperties=my_font)
+plt.xlabel('距离分布',fontproperties=my_font)
 plt.xticks(rotation=45)
 
 for bar in bars:
     yval = bar.get_height()
     plt.text(bar.get_x() + bar.get_width()/2, yval, round(yval, 2), ha='center', va='bottom')
 plt.tight_layout()
-plt.savefig('/home/ps/huichenchen/mmdetection3d/results2/test_cube.png')
+plt.savefig('/home/ps/huichenchen/mmdetection3d/results2/0519_cube_distribution.png')
 

@@ -42,9 +42,12 @@ def process_files(bin_dir, json_dir, ply_dir):
             print(f"Processed and saved: {ply_file_path}")
 
 # 指定三个文件夹的路径
-bin_dir = '/home/ps/huichenchen/mmdetection3d/results2/exp/bin_output/bin_robosense32-park'
-json_dir = '/home/ps/huichenchen/mmdetection3d/results2/exp/json_output/json_robosense32-park/preds'
-ply_dir = '/home/ps/huichenchen/mmdetection3d/results2/exp/ply_output/ply_robosense32-park'
+# bin_dir = '/mnt/datasets/huichenchen/robosense/rs128/test/bin'
+# json_dir = '/mnt/datasets/huichenchen/robosense/rs128/test/json'
+# ply_dir = '/mnt/datasets/huichenchen/robosense/rs128/test/ply'
 
+bin_dir = '/mnt/datasets/huichenchen/robosense/rs32_park/bin'
+json_dir = '/mnt/datasets/huichenchen/robosense/rs32_park/multi-json2/preds'
+ply_dir = '/mnt/datasets/huichenchen/robosense/rs32_park/multi-ply2'
 # 调用函数
 process_files(bin_dir, json_dir, ply_dir)

@@ -1,15 +1,17 @@
+
+
 import os
 import sys
 import time
 #用于排队进行模型训练
-cmd = 'CUDA_VISIBLE_DEVICES=3 /home/ps/miniconda3/envs/hcc_1/bin/python \
+cmd = 'CUDA_VISIBLE_DEVICES=2 /home/ps/miniconda3/envs/hcc_1/bin/python \
        /home/ps/huichenchen/mmdetection3d/tools/train.py \
-       /home/ps/huichenchen/mmdetection3d/configs/cylinder3d/cylinder3d_1xb2-multi-mix_plusdistance.py \
-       --work-dir /home/ps/huichenchen/mmdetection3d/results2/cylinder3d/0502-plusdistance' 
+       /home/ps/huichenchen/mmdetection3d/configs/cylinder3d/cylinder3d_1xb2-multistar-mix_plusdistance.py \
+       --work-dir /home/ps/huichenchen/mmdetection3d/results2/cylinder3d/0503-multistar-mix_plusdistance2' 
 
 #0425-plusdistance --resume
 
-def gpu_info(gpu_index=3):
+def gpu_info(gpu_index=2):
     info = os.popen('nvidia-smi | grep %').read().split('\n')[gpu_index].split('|')
     power = int(info[1].split()[-3][:-1])
     memory = int(info[2].split('/')[0].strip()[:-3])

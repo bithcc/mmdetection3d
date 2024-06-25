@@ -55,8 +55,8 @@ def calculate_voxel_proportions(bin_files, length_voxel_size, height_voxel_size,
     return proportions
 
 # Example usage
-# directory_path = '/mnt/datasets/huichenchen/SemanticKitti/dataset/sequences'  # Replace with your directory path
-directory_path = '/home/ps/huichenchen/mmdetection3d/scripts'
+directory_path = '/mnt/datasets/huichenchen/SemanticKitti/dataset/sequences'  # Replace with your directory path
+# directory_path = '/home/ps/huichenchen/mmdetection3d/scripts'
 bin_files = get_bin_files(directory_path)
 length_voxel_size = 0.1
 height_voxel_size = 1
@@ -70,18 +70,39 @@ distance_ranges = {
     '50m+': (50, np.inf)
 }
 
-proportions = calculate_voxel_proportions(bin_files, length_voxel_size, height_voxel_size, angle_voxel_size, distance_ranges)
+# proportions = calculate_voxel_proportions(bin_files, length_voxel_size, height_voxel_size, angle_voxel_size, distance_ranges)
 
+proportions = {'0-10m': 0.29, 
+               '10-20m': 0.19, 
+               '20-30m': 0.11, 
+               '30-40m': 0.05, 
+               '40-50m': 0.04, 
+               '50m+': 0.0}
 # Plotting
 bars = plt.bar(proportions.keys(), proportions.values())
-plt.ylabel('Proportion of Actual to Theoretical Voxels')
-plt.xlabel('Distance Range')
-plt.title('Voxel Distribution by Distance')
-plt.xticks(rotation=45)
+# plt.ylabel('Proportion of Actual to Theoretical Voxels')
+# plt.xlabel('Distance Range')
+# plt.title('Voxel Distribution by Distance')
+from matplotlib import font_manager
+my_font = font_manager.FontProperties(fname = "/usr/share/fonts/MyFonts/simhei.ttf")
+plt.ylabel('实际体素数与理论最大数值的比例',fontproperties=my_font,size=15)
+plt.xlabel('距离分布',fontproperties=my_font,size=15)
+
+# plt.xticks(rotation=45)
 
 for bar in bars:
     yval = bar.get_height()
-    plt.text(bar.get_x() + bar.get_width()/2, yval, round(yval, 2), ha='center', va='bottom')
-plt.tight_layout()
-plt.savefig('/home/ps/huichenchen/mmdetection3d/results2/test_cylinder.png')
+    plt.text(bar.get_x() + bar.get_width()/2, yval, round(yval, 2), ha='center', va='bottom',size=12)
 
+plt.tick_params(axis='both',which='major',labelsize=12)
+plt.tight_layout()
+plt.savefig('/home/ps/huichenchen/mmdetection3d/results2/0522_voxel_distribution_test.png')
+
+# from matplotlib.font_manager import FontManager
+# import subprocess
+
+# mpl_fonts = set(f.name for f in FontManager().ttflist)
+
+# print('all font list get from matplotlib.font_manager:')
+# for f in sorted(mpl_fonts):
+#     print('\t' + f)

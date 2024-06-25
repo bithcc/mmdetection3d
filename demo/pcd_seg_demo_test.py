@@ -1,6 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import logging
 import os
+import glob
 from argparse import ArgumentParser
 
 from mmengine.logging import print_log
@@ -68,19 +69,37 @@ def parse_args():
 
 
 def main():
-    # TODO: Support inference of point cloud numpy file.
+    # 解析命令行参数
     init_args, call_args = parse_args()
 
+    # 初始化推理器
     inferencer = LidarSeg3DInferencer(**init_args)
     
-    inferencer(**call_args)
+    # 直接修改文件夹名称
+    new_input_folder = '/mnt/datasets/huichenchen/robosense/rs128/bin'
+    call_args['inputs']['points'] = new_input_folder
+    
+    # 确保输出目录存在
+    if not os.path.exists(call_args['out_dir']):
+        os.makedirs(call_args['out_dir'])
 
-    if call_args['out_dir'] != '' and not (call_args['no_save_vis']
-                                           and call_args['no_save_pred']):
+    # 获取更新后的文件夹中所有.bin文件的路径
+    bin_files = glob.glob(os.path.join(call_args['inputs']['points'], '*.bin'))
+
+    # 遍历所有.bin文件并进行推理
+    for bin_file in bin_files:
+        # 更新call_args中的输入文件路径（这一步在这里是多余的，因为已经更新了）
+        # call_args['inputs']['points'] = bin_file
+        
+        # 进行推理
+        inferencer(**call_args)
+        
+        # 如果需要，可以在这里添加打印语句或其他逻辑
+
+    if not (call_args['no_save_vis'] and call_args['no_save_pred']):
         print_log(
-            f'results have been saved at {call_args["out_dir"]}',
+            f'Results have been saved at {call_args["out_dir"]}.',
             logger='current')
-
 
 if __name__ == '__main__':
     main()

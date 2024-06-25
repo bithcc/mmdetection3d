@@ -2684,6 +2684,71 @@ class LaserMix(BaseTransform):
         repr_str += f'prob={self.prob})'
         return repr_str
 
+
+@TRANSFORMS.register_module()
+class LaserInstanceMix(BaseTransform):#bithcc@@@@，这段代码只进行了关键类别的复制，没有进行区块的组合，因此取名为instancemix更合适
+    """Implementation of the LaserMix transformation with instance rotation and pasting."""
+
+    def __init__(self, num_areas, pitch_angles, instance_classes, num_rotations=3, max_rotation_angle=360, pre_transform=None, prob=1.0):
+        self.num_areas = num_areas
+        self.pitch_angles = pitch_angles
+        self.instance_classes = instance_classes
+        self.num_rotations = num_rotations
+        self.max_rotation_angle = max_rotation_angle
+        self.prob = prob
+        if pre_transform is None:
+            self.pre_transform = None
+        else:
+            self.pre_transform = Compose(pre_transform)
+
+    def laser_mix_transform(self, input_dict, mix_results):
+        # Existing logic for mixing based on pitch angles...
+        # Perform instance manipulation at the end
+        input_dict['points'], input_dict['pts_semantic_mask'] = self.instance_manipulate(
+            input_dict['points'], input_dict['pts_semantic_mask'], mix_results['points'], mix_results['pts_semantic_mask'])
+        return input_dict
+
+    def instance_manipulate(self, points, masks, mix_points, mix_masks):
+        # Extract instances for manipulation
+        rotated_points, rotated_masks = [], []
+        for cls in self.instance_classes:
+            idx = mix_masks == cls
+            instance_points = mix_points[idx]
+            instance_masks = mix_masks[idx]
+
+            # Rotate each instance and add to the list
+            for _ in range(self.num_rotations):
+                angle = np.random.uniform(0, self.max_rotation_angle)
+                radians = np.deg2rad(angle)
+                rotated_p = rotate_point_cloud(instance_points, radians)
+                rotated_points.append(rotated_p)
+                rotated_masks.append(instance_masks)
+
+        # Concatenate rotated instances with the original points
+        final_points = torch.cat([points, *rotated_points])
+        final_masks = np.concatenate([masks, *rotated_masks])
+        return final_points, final_masks
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(num_areas={self.num_areas}, pitch_angles={self.pitch_angles}, instance_classes={self.instance_classes}, num_rotations={self.num_rotations}, max_rotation_angle={self.max_rotation_angle}, prob={self.prob})"
+
+def rotate_point_cloud(points, angle):
+    """Rotate the point cloud around the Z-axis by the given angle in radians."""
+    cos_angle = torch.cos(angle)
+    sin_angle = torch.sin(angle)
+    rotation_matrix = torch.tensor([
+        [cos_angle, -sin_angle, 0],
+        [sin_angle, cos_angle, 0],
+        [0, 0, 1]
+    ], dtype=torch.float32, device=points.device)
+
+    # Apply the rotation matrix to the points (N, 3)
+    rotated_points = torch.matmul(points, rotation_matrix.T)  # Ensure correct matrix multiplication
+    return rotated_points
+
+
+
+
 @TRANSFORMS.register_module()#bithcc@@@@4月20日
 class DistanceMix(BaseTransform):
     """DistanceMix data augmentation.
@@ -2788,3 +2853,85 @@ class DistanceMix(BaseTransform):
         """String representation of the module."""
         return f'{self.__class__.__name__}(distance_bins={self.distance_bins}, swap_ratio={self.swap_ratio}, pre_transform={self.pre_transform},prob={self.prob})'
 
+@TRANSFORMS.register_module()
+class DistanceInstanceMix(BaseTransform):#bithcc@@@@5月9日
+    """Enhanced DistanceMix data augmentation with instance-level manipulation."""
+
+    def __init__(self,
+                 distance_bins: List[float],
+                 instance_classes: List[int],  # Classes to manipulate
+                 pre_transform: Optional[Sequence[dict]] = None,
+                 swap_ratio: float = 0.5,
+                 num_rotations: int = 3,  # Number of rotations per instance
+                 max_rotation_angle: float = 360,  # Max rotation angle in degrees
+                 prob: float = 1.0) -> None:
+        self.distance_bins = distance_bins
+        self.swap_ratio = swap_ratio
+        self.instance_classes = instance_classes
+        self.num_rotations = num_rotations
+        self.max_rotation_angle = max_rotation_angle
+        self.prob = prob
+        self.pre_transform = Compose(pre_transform) if pre_transform else None
+
+    def distance_mix_transform(self, input_dict: dict, mix_results: dict) -> dict:
+        mix_points = mix_results['points']
+        mix_pts_semantic_mask = mix_results['pts_semantic_mask']
+
+        points = input_dict['points']
+        pts_semantic_mask = input_dict['pts_semantic_mask']
+
+        # Compute radial distances for both point clouds
+        distances = torch.sqrt(points.coord[:, 0]**2 + points.coord[:, 1]**2 )
+        mix_distances = torch.sqrt(mix_points.coord[:, 0]**2 + mix_points.coord[:, 1]**2 )
+
+        # Binning points by distance
+        bin_indices = torch.bucketize(distances, self.distance_bins, right=True)
+        mix_bin_indices = torch.bucketize(mix_distances, self.distance_bins, right=True)
+
+        # Segments to swap
+        for bin_index in torch.unique(bin_indices):
+            if torch.rand(1) < self.swap_ratio:
+                current_idx = (bin_indices == bin_index)
+                mix_current_idx = (mix_bin_indices == bin_index)
+
+                # Swap points
+                temp_points = points[current_idx].clone()
+                points[current_idx] = mix_points[mix_current_idx]
+                mix_points[mix_current_idx] = temp_points
+
+                # Swap masks
+                temp_mask = pts_semantic_mask[current_idx].clone()
+                pts_semantic_mask[current_idx] = mix_pts_semantic_mask[mix_current_idx]
+                mix_pts_semantic_mask[mix_current_idx] = temp_mask
+
+        # Instance manipulation after swapping
+        points, pts_semantic_mask = self.instance_manipulate(points, pts_semantic_mask)
+
+        input_dict['points'] = points
+        input_dict['pts_semantic_mask'] = pts_semantic_mask
+        return input_dict
+
+    def instance_manipulate(self, points, masks):
+        # Extract instances for manipulation
+        instance_points, instance_masks = [], []
+        for cls in self.instance_classes:
+            idx = masks == cls
+            instance_points.append(points[idx])
+            instance_masks.append(masks[idx])
+
+        # Rotate and paste instances
+        rotated_points, rotated_masks = [], []
+        for angle_deg in np.random.uniform(0, self.max_rotation_angle, self.num_rotations):
+            radians = np.deg2rad(angle_deg)
+            for p, m in zip(instance_points, instance_masks):
+                rotated_p = rotate_point_cloud(p, radians)  # Define this function
+                rotated_points.append(rotated_p)
+                rotated_masks.append(m)
+
+        # Concatenate rotated instances with original points
+        final_points = torch.cat([points, *rotated_points])
+        final_masks = np.concatenate([masks, *rotated_masks])
+        return final_points, final_masks
+
+    def __repr__(self) -> str:
+        return f'{self.__class__.__name__}(distance_bins={self.distance_bins}, swap_ratio={self.swap_ratio}, instance_classes={self.instance_classes}, num_rotations={self.num_rotations}, max_rotation_angle={self.max_rotation_angle}, prob={self.prob})'

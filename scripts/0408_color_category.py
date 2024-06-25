@@ -38,7 +38,7 @@ for i, (category, rgb) in enumerate(categories_colors.items(), start=1):
     ax.set_facecolor(np.array(rgb) / 255.0)  # 设置子图背景颜色
     ax.set_xticks([])  # 移除x轴刻度
     ax.set_yticks([])  # 移除y轴刻度
-    ax.set_title(category)  # 设置子图标题为类别名称
+    ax.set_title(category,size=18)  # 设置子图标题为类别名称
 
 plt.tight_layout()  # 调整子图间距
-plt.savefig('/home/ps/huichenchen/mmdetection3d/results2/0411_colormap.png')
+plt.savefig('/home/ps/huichenchen/mmdetection3d/results2/0522_colormap_test.png')

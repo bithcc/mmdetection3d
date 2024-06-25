@@ -5,7 +5,7 @@ import time
 cmd = 'CUDA_VISIBLE_DEVICES=6 /home/ps/miniconda3/envs/hcc_1/bin/python \
        /home/ps/huichenchen/mmdetection3d/tools/train.py \
        /home/ps/huichenchen/mmdetection3d/configs/cylinder3d/cylinder3d_1xb2-multi-mix_plusdistance.py \
-       --work-dir /home/ps/huichenchen/mmdetection3d/results2/cylinder3d/1xb2_multi-mix_plusdistance2 --resume'
+       --work-dir /home/ps/huichenchen/mmdetection3d/results2/cylinder3d/0502_multi-mix_plusdistance'
 
 
 def gpu_info(gpu_index=6):
@@ -16,10 +16,10 @@ def gpu_info(gpu_index=6):
     return power,memory
 
 
-def narrow_setup(interval=10):
+def narrow_setup(interval=1):
     gpu_power, gpu_memory = gpu_info()
     i = 0
-    while gpu_memory > 1000 and gpu_power > 20 :  # set waiting condition
+    while gpu_memory > 100 and gpu_power > 20 :  # set waiting condition
         gpu_power, gpu_memory = gpu_info()
         i = i % 5
         symbol = 'monitoring: ' + '>' * i + ' ' * (10 - i - 1) + '|'

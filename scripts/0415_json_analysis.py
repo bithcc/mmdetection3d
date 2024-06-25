@@ -48,8 +48,8 @@ def save_to_excel(data, output_path):
     writer.close()
 
 def main():
-    file_path = '/home/ps/huichenchen/mmdetection3d/results2/cylinder3d/0422-parallel-noddcm/20240423_025709/vis_data/20240423_025709.json'  # Update the path to your JSON file
-    output_path = '/home/ps/huichenchen/mmdetection3d/results2/analysis/0422_parallel-noddcm.xlsx'  # Desired output path for the Excel file
+    file_path = '/home/ps/huichenchen/mmdetection3d/results2/cylinder3d/0523_1xb2_parallel-withddcm/20240523_100456/vis_data/20240523_100456.json'  # Update the path to your JSON file
+    output_path = '/home/ps/huichenchen/mmdetection3d/results2/analysis/0527-parallel-withddcm.xlsx'  # Desired output path for the Excel file
 
     json_data = load_json_data(file_path)
     processed_data = process_data(json_data)

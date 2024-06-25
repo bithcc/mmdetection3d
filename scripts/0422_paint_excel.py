@@ -1,13 +1,14 @@
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 
 # 读取Excel文件
-df = pd.read_excel('/home/ps/huichenchen/mmdetection3d/results2/analysis/1xb2_base3d.xlsx')
+df = pd.read_excel('/home/ps/huichenchen/mmdetection3d/results2/analysis2/0527-onlylaser.xlsx')
 
 # 设置图形大小并调整布局
 plt.figure(figsize=(20, 12))
-plt.subplots_adjust(right=0.85)  # 调整子图参数，为图例留出空间
+plt.subplots_adjust(right=0.8)  # 调整子图参数，为图例留出空间
 
 # 使用Excel表的前20列
 categories = df.columns[:20]
@@ -27,19 +28,20 @@ linewidths = [1.5] * 19 + [3.5]  # 默认1.5，miou为2.5
 
 # 为每个类别绘图
 for category, color, lw in zip(categories, colors, linewidths):
-    plt.plot(df.index + 1, df[category], label=category, color=color, linewidth=lw)
+    plt.plot(df.index.to_numpy() + 1, df[category], label=category, color=color, linewidth=lw)
 
+plt.rcParams['font.sans-serif'] = ['SimHei']#指定字体为SimHei
 # 显示图例，一列显示，更大的文字，调整图例位置
-plt.legend(loc='upper left', bbox_to_anchor=(1.05, 1), ncol=1, fontsize='x-large')
+plt.legend(loc='upper left', bbox_to_anchor=(1, 1), ncol=1, fontsize='25')
 
 # 设置标题和标签
-plt.title('IoU by Category over Epochs', fontsize='x-large')
-plt.xlabel('Epoch', fontsize='x-large')
-plt.ylabel('IoU', fontsize='x-large')
+plt.title('各类别IoU随训练周期的变化', fontsize='30')
+plt.xlabel('训练周期', fontsize='30')
+plt.ylabel('IoU', fontsize='30')
 
 # 设置坐标轴标签大小
-plt.xticks(range(1, 37), fontsize='x-large')  # Ensure x-ticks are from 1 to 36
-plt.yticks(fontsize='x-large')
+plt.xticks(range(1, 37,2), fontsize='30')  # Ensure x-ticks are from 1 to 36
+plt.yticks(fontsize='30')
 
 # 设置x轴和y轴的起始点为1，并让它们在原点相交
 plt.xlim(1, 36)
@@ -48,4 +50,5 @@ plt.axhline(0, color='black', linewidth=0.8)
 plt.axvline(1, color='black', linewidth=0.8)
 
 # 显示图形
-plt.savefig('/home/ps/huichenchen/mmdetection3d/results2/analysis_paint/0422-base3d.png')
+# plt.savefig('/home/ps/huichenchen/mmdetection3d/results2/analysis_paint/0422-base3d.png')
+plt.savefig('/home/ps/huichenchen/mmdetection3d/results2/analysis_paint3/0527-onlylaser.png')

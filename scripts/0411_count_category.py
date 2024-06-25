@@ -39,9 +39,56 @@ def count_labels(folder_paths, label_map, category_map):
                     counts = Counter(labels)
                     overall_counts.update(counts)
 
+ 
+    
     # 将标签转换为类别名称
     category_counts = {category_map.get(label, "Unknown"): count
                        for label, count in overall_counts.items()}
+    # #sequence08
+    # category_counts['ignore'] = 22321839
+    # category_counts['vegetation'] = 145937016
+    # category_counts['pole'] = 1666427
+    # category_counts['trunk'] = 5503279
+    # category_counts['building'] = 56878900
+    # category_counts['other-vehicle'] = 2222268
+    # category_counts['traffic-sign'] = 381442
+    # category_counts['car'] = 30856105
+    # category_counts['sidewalk'] = 60280496
+    # category_counts['terrain'] = 64111254    
+    # category_counts['road'] = 87963626
+    # category_counts['fence'] = 12642657
+    # category_counts['motorcycle'] = 345868
+    # category_counts['bicycle'] = 247796
+    # category_counts['person'] = 476946   
+    # category_counts['bicyclist'] = 306860
+    # category_counts['parking'] = 5947692
+    # category_counts['other-ground'] = 457650
+    # category_counts['truck'] = 508704
+    # category_counts['motorcyclist'] = 22737 
+    
+    #train
+    category_counts['ignore'] = 73587231
+    category_counts['vegetation'] = 627195745
+    category_counts['pole'] = 6712285
+    category_counts['trunk'] = 14189414
+    category_counts['building'] = 311802516
+    category_counts['other-vehicle'] = 5455888
+    category_counts['traffic-sign'] = 1441988
+    category_counts['car'] = 99431486
+    category_counts['sidewalk'] = 338183720
+    category_counts['terrain'] = 183603141    
+    category_counts['road'] = 467085589
+    category_counts['fence'] = 170001681
+    category_counts['motorcycle'] = 936031
+    category_counts['bicycle'] = 391766
+    category_counts['person'] = 816813   
+    category_counts['bicyclist'] = 298604
+    category_counts['parking'] = 34577789
+    category_counts['other-ground'] = 9173976
+    category_counts['truck'] = 4586090
+    category_counts['motorcyclist'] = 87779
+ 
+    
     return pd.DataFrame(list(category_counts.items()), columns=['Category', 'Count'])
 
 def plot_label_distribution(label_counts):
@@ -50,30 +97,42 @@ def plot_label_distribution(label_counts):
     
     Args:
     - label_counts (pd.DataFrame): 包含类别名和对应计数的数据框。
-    """
+    """ 
+    
+    
     label_counts.sort_values('Count', ascending=False, inplace=True)
+    plt.rcParams['font.sans-serif'] = ['SimHei']#指定字体为SimHei
     plt.figure(figsize=(12, 8))
     plt.bar(label_counts['Category'], label_counts['Count'], color='skyblue')
     plt.yscale('log')  # 使用对数坐标轴
-    plt.xlabel('Category')
-    plt.ylabel('Count (log scale)')
-    plt.title('Distribution of Categories Across Files')
-    plt.xticks(rotation=45, ha='right')
+    # plt.xlabel('Category')
+    # plt.ylabel('Count (log scale)')
+    # plt.title('Distribution of Categories Across Files')
+    # plt.xticks(rotation=45, ha='right')
+    # plt.tight_layout()
+    # plt.savefig('/home/ps/huichenchen/mmdetection3d/results2/0411_count_category_all.png')
+    
+    plt.xlabel('类别',size=18)
+    plt.ylabel('标签点数量 (log scale)',size=18)
+    # plt.title('Distribution of Categories Across Files')
+    plt.xticks(rotation=45, ha='right',size=18)
+    plt.yticks(size=18)
     plt.tight_layout()
-    plt.savefig('/home/ps/huichenchen/mmdetection3d/results2/0411_count_category_all.png')
+    plt.savefig('/home/ps/huichenchen/mmdetection3d/results2/0522_count_category_train.png')
 
 # 配置路径和映射
-folder_paths = [ '/home/ps/huichenchen/mmdetection3d/data/semantickitti/sequences/00/labels', 
-                 '/home/ps/huichenchen/mmdetection3d/data/semantickitti/sequences/01/labels',
-                 '/home/ps/huichenchen/mmdetection3d/data/semantickitti/sequences/02/labels',
-                 '/home/ps/huichenchen/mmdetection3d/data/semantickitti/sequences/03/labels',
-                 '/home/ps/huichenchen/mmdetection3d/data/semantickitti/sequences/04/labels',
-                 '/home/ps/huichenchen/mmdetection3d/data/semantickitti/sequences/05/labels',
-                 '/home/ps/huichenchen/mmdetection3d/data/semantickitti/sequences/06/labels',
-                 '/home/ps/huichenchen/mmdetection3d/data/semantickitti/sequences/07/labels',
-                 '/home/ps/huichenchen/mmdetection3d/data/semantickitti/sequences/09/labels',
-                 '/home/ps/huichenchen/mmdetection3d/data/semantickitti/sequences/10/labels',]  # 实际的文件夹路径
-# folder_paths = [ '/home/ps/huichenchen/mmdetection3d/data/semantickitti/sequences/08/labels',]  # 实际的文件夹路径
+# folder_paths = [ '/home/ps/huichenchen/mmdetection3d/data/semantickitti/sequences/00/labels', 
+#                  '/home/ps/huichenchen/mmdetection3d/data/semantickitti/sequences/01/labels',
+#                  '/home/ps/huichenchen/mmdetection3d/data/semantickitti/sequences/02/labels',
+#                  '/home/ps/huichenchen/mmdetection3d/data/semantickitti/sequences/03/labels',
+#                  '/home/ps/huichenchen/mmdetection3d/data/semantickitti/sequences/04/labels',
+#                  '/home/ps/huichenchen/mmdetection3d/data/semantickitti/sequences/05/labels',
+#                  '/home/ps/huichenchen/mmdetection3d/data/semantickitti/sequences/06/labels',
+#                  '/home/ps/huichenchen/mmdetection3d/data/semantickitti/sequences/07/labels',
+#                  '/home/ps/huichenchen/mmdetection3d/data/semantickitti/sequences/09/labels',
+#                  '/home/ps/huichenchen/mmdetection3d/data/semantickitti/sequences/10/labels',]  # 实际的文件夹路径
+# folder_paths = [ '/home/ps/huichenchen/mmdetection3d/data/semantickitti/sequences/04/labels',]  # 实际的文件夹路径
+folder_paths = ['/home/ps/huichenchen/mmdetection3d/results2/test/0522']
 label_map = {  # 标签ID到类别ID的映射
      0: 19,
     1: 19,

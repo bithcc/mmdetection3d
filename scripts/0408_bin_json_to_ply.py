@@ -6,10 +6,13 @@ import open3d as o3d
 # /home/ps/huichenchen/mmdetection3d/results2/test2/preds/1659079941.894149173.json
 # /home/ps/huichenchen/mmdetection3d/results2/test2/preds/1659079941.989026227.json
 # 替换成你的文件路径
-bin_file_path = '/home/ps/huichenchen/mmdetection3d/results2/exp/bin_output/bin_robosense32-park/1710471195.359427452.bin'
-json_file_path = '/home/ps/huichenchen/mmdetection3d/results2/exp/json_output/json_robosense32-park/preds/1710471195.359427452.json'
-ply_file_path = '/home/ps/huichenchen/mmdetection3d/results2/exp/ply_output/ply_robosense32-park/1710471195.359427452.ply'
+# bin_file_path = '/home/ps/huichenchen/mmdetection3d/results2/exp/bin_output/bin_robosense32-park/1710471195.359427452.bin'
+# json_file_path = '/home/ps/huichenchen/mmdetection3d/results2/exp/json_output/json_robosense32-park/preds/1710471195.359427452.json'
+# ply_file_path = '/home/ps/huichenchen/mmdetection3d/results2/exp/ply_output/ply_robosense32-park/1710471195.359427452.ply'
 
+bin_file_path = '/mnt/datasets/huichenchen/robosense/rs32/bin/32_yueanerlu_1190711151651_990.bin'
+json_file_path = '/mnt/datasets/huichenchen/robosense/rs32/test/32_yueanerlu_1190711151651_990.json'  # 替换为实际的文件路径
+ply_file_path = '/mnt/datasets/huichenchen/robosense/rs32/test/0607_test2.ply'  # 替换为希望保存的ply文件路径
 # 读取点云数据
 point_cloud = np.fromfile(bin_file_path, dtype=np.float32).reshape(-1, 4)[:,:-1]
 point_cloud = point_cloud.astype(np.float64)

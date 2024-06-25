@@ -4,18 +4,31 @@ from plyfile import PlyData, PlyElement
 from tqdm import tqdm
 import math
 
-# 颜色映射字典
+# 颜色映射字典128线
 color_map = {
-    'vehicle': (100, 150, 245),   #car   
-    'big_vehicle': (80, 30, 180),  # 绿色
-    'huge_vehicle': (80, 30, 180), # 蓝色
-    'pedestrian': (155, 30, 30), # 黄色
-    'bicycle': (100, 230, 245),    # 紫色
-    'motorcycle': (30, 60, 150), # 青色
-    'tricycle': (30, 60, 150),   # 橙色
-    'cone': (255, 255, 255),       # 暗紫色
-    'unknown': (255, 255, 255)   # 灰色
+    'vehicle': (100, 150, 245),     #0
+    'big_vehicle': (80, 30, 180),   #3
+    'huge_vehicle': (80, 30, 180),  #3
+    'pedestrian': (155, 30, 30),    #5
+    'bicycle': (100, 230, 245),     #1
+    'motorcycle': (30, 60, 150),    #2
+    'tricycle': (30, 60, 150),      #2
+    'cone': (255,0,0 ),             #18
+    'unknown': (128, 128, 128)      #19
 }
+
+# # 颜色映射字典32线
+# color_map = {
+#     'vehicle': (100, 150, 245),   #car   
+#     'big_vehicle': (80, 30, 180),  # 绿色
+#     'huge_vehicle': (80, 30, 180), # 蓝色
+#     'pedestrian': (155, 30, 30), # 黄色
+#     'bicycle': (100, 230, 245),    # 紫色
+#     'unknown': (128, 128, 128)   # 灰色
+# }
+
+
+
 
 def euler_to_rotation_matrix(roll, pitch, yaw):
     # 计算旋转矩阵
@@ -78,10 +91,10 @@ def save_as_ply(points, colors, output_path):
     el = PlyElement.describe(vertex, 'vertex')
     PlyData([el], text=True).write(output_path)
 
-bin_path = '/home/ps/huichenchen/mmdetection3d/results2/exp/bin_output/bin_robosense128-road/ruby_ruby002_baoshenlu_1200303103447_1780.bin'
-json_path = '/home/ps/huichenchen/mmdetection3d/results2/exp/json_input/json_robosense128-road/ruby_ruby002_baoshenlu_1200303103447_1780.json'
-ply_path = '/home/ps/huichenchen/mmdetection3d/results2/exp/vis_output/vis_robosense128-road/ruby_ruby002_baoshenlu_1200303103447_1780.ply'
-
+bin_path = '/home/ps/huichenchen/mmdetection3d/results2/exp/bin_output/bin_robosense32-road/32_32B413_beierlu_1191010105755_115.bin'
+json_path = '/home/ps/huichenchen/mmdetection3d/results2/exp/json_input/json_robosense32-road/32_32B413_beierlu_1191010105755_115.json'
+# ply_path = '/home/ps/huichenchen/mmdetection3d/results2/exp/vis_output/vis_robosense128-road-new/ruby_ruby002_baoshenlu_1200303103447_5.ply'
+ply_path = '/home/ps/huichenchen/mmdetection3d/results2/0525_32_32B413_beierlu_1191010105755_115.ply'
 points = load_bin(bin_path)
 annotations = load_annotations(json_path)
 colors = color_points(points, annotations)
